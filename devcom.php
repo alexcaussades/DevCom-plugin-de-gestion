@@ -6,11 +6,8 @@ Description: plugin de gestion de la communauté...
 Version: 1.0
 Author: Alexandre Caussades
 Author URI: http://devcomrp.fr
-License: GPL2
+License: Sous droit d'auteur Alexandre Caussades <alexcaussades (at) gmail.com>
 */
-
-
-require_once 'config.php';
 
 
 add_action('admin_menu', 'devcomMenus' );
@@ -89,8 +86,7 @@ function gestionMembres()
 function AddPlayers()
 {
 			global $current_user;
-			global $bdd;
-
+			
 if(isset($_POST['devcom_option_pseudo']) AND isset($_POST['devcom_option_discord']) AND isset($_POST['devcom_option_steamid']) AND isset($_POST['devcom_option_user_id']))
 {
 
