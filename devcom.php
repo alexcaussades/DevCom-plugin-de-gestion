@@ -10,6 +10,8 @@ License: GPL2
 */
 
 
+require_once 'config.php';
+
 
 add_action('admin_menu', 'devcomMenus' );
 
@@ -28,8 +30,7 @@ function render_pannel()
 {
 	global $current_user; // info user
 	global $user_login; //  Info login
-	global $user_data; // info Data
-	
+		
 	/*
 		Variables de la Pages
 	 */
@@ -37,7 +38,7 @@ function render_pannel()
 	$devcomVariableVersion = '1.0'; //Affichage de la version
 	$devcomimage = plugins_url('devcom/images/icon.png'); //Affichage de limage
 	$devcomtitre = 'DevCom Panel Admin !'; //Titre de la page
-	$user_info = $user_data;
+	
 ?>
 <!-- Visible de la page d'acceuil en bac office -->
 <div class="wrap theme-options-page">
@@ -88,63 +89,27 @@ function gestionMembres()
 function AddPlayers()
 {
 			global $current_user;
-			
+			global $bdd;
 
-if(isset($_POST['devcom_option_pseudo']) AND isset($_POST['devcom_option_discord']) AND isset($_POST['devcom_option_steamid']) AND isset($_POST['devcom_option_user_id'])){
+if(isset($_POST['devcom_option_pseudo']) AND isset($_POST['devcom_option_discord']) AND isset($_POST['devcom_option_steamid']) AND isset($_POST['devcom_option_user_id']))
+{
 
 				$devcom_option_pseudo  = htmlspecialchars($_POST['devcom_option_pseudo']);
 				$devcom_option_discord = htmlspecialchars($_POST['devcom_option_discord']);
 				$devcom_option_steamid = htmlspecialchars($_POST['devcom_option_steamid']);
 				$devcom_option_user_id = htmlspecialchars($_POST['devcom_option_user_id']);
+				$devcom_option_comments = htmlspecialchars($_POST['devcom_option_comments']);
 				
-				global $wpdb;	
-				$wpdb->insert(
-					$wpdb->devcom, array('devcom_option_pseudo' => $devcom_option_pseudo, 
-					'devcom_option_discord' => $devcom_option_discord,
-					'devcom_option_steamid' => $devcom_option_steamid,
-					'devcom_option_user_id' => $devcom_option_user_id ));
-
-			/*	$wpdb->insert(
-    $wpdb->prefix.'ma_table',
-    array(
-        'nom' => 'Laetitia',
-        'activite' => 'Ski',
-        'date' => '2014-12-25',
-        'duree' => 4
-    ),
-    array(
-        '%s',
-        '%s',
-        '%s',
-        '%d'
-    )
-);
-*/
-/*		
-	update_option('devcom_option_pseudo', $_POST['devcom_option_pseudo']);
-	update_option('devcom_option_discord', $_POST['devcom_option_discord']);
-	update_option('devcom_option_steamid', $_POST['devcom_option_steamid']);
-	update_option('devcom_option_user_id', $_POST['devcom_option_user_id']);
-*/
+				global $wpdb;          
+                                    
+           $wpdb->insert("wp_devcom", array(
+						'devcom_option_pseudo'   => $devcom_option_pseudo, 
+						'devcom_option_discord'  => $devcom_option_discord,
+						'devcom_option_steamid'  => $devcom_option_steamid,
+						'devcom_option_user_id'  => $devcom_option_user_id,
+						'devcom_option_comments' => $devcom_option_comments,
+						));
 }
-/*
-			if (isset($_GET['devcom_option_pseudo']) AND isset($_GET['devcom_option_discord']) AND isset($_GET['devcom_option_steamid']) AND isset($_GET['devcom_option_user_id']))
-				{
-					global $wpdb;
-				$devcom_option_pseudo  = htmlspecialchars($_GET['devcom_option_pseudo']);
-				$devcom_option_discord = htmlspecialchars($_GET['devcom_option_discord']);
-				$devcom_option_steamid = htmlspecialchars($_GET['devcom_option_steamid']);
-				$devcom_option_user_id = htmlspecialchars($_GET['devcom_option_user_id']);
-				$row = $wpdb->prepare("INSERT INTO wp_devcom(ID, devcom_option_pseudo, devcom_option_discord, devcom_option_steamid, devcom_option_user_id) VALUES (:ID, :devcom_option_pseudo, :devcom_option_discord, :devcom_option_steamid, :devcom_option_user_id")
-				$row->execute(array(
-						'devcom_option_pseudo' => $devcom_option_pseudo,
-						'devcom_option_discord' => $devcom_option_discord,
-						'devcom_option_steamid' => $devcom_option_steamid,
-						'devcom_option_user_id' => $devcom_option_user_id
-					));
-}
-*/
-
 			
 	?>
 	    <table cellspacing="0" class="widefat options-table">
@@ -154,19 +119,21 @@ if(isset($_POST['devcom_option_pseudo']) AND isset($_POST['devcom_option_discord
 					</tr>
 					</thead>
 					<tbody>
-						<td>
+			<td>
 			<form method="post" action="">
     	 	<label><b>Pseudo : </b></label>
-			<input type="text" name="devcom_option_pseudo" id="pseudo">
+			<input type="text" name="devcom_option_pseudo" id="pseudo"> <br />
 			<label><b>Discord : </b></label>
-			<input type="text" name="devcom_option_discord" id="discord">
+			<input type="text" name="devcom_option_discord" id="discord"><br />
 			<label><b>steamid : </b></label>
 			<? /* Steamid de valeur de 17 caratere blocage du systeme */ ?>
-			<input type="text" name="devcom_option_steamid" id="steamid" minlength="17" maxlength="17" placeholder="76561198027438386">
+			<input type="text" name="devcom_option_steamid" id="steamid" minlength="17" maxlength="17" placeholder="76561198027438386"><br />
+			<label><b>Commentaire : </b></label><br />
+			<textarea name="devcom_option_comments" id="commentaire"></textarea><br />
 			<input type="hidden" name="devcom_option_user_id" value="<?= $current_user->user_login ?>">
-			<input type="submit" name="devcom_AddPlayers" class="button-primary autowidth" value="Envoyer">
+			<input type="submit" name="devcom_AddPlayers" class="button-primary autowidth" value="Envoyer"><br />
     	 </form></td>
-					</tbody>
+			</tbody>
 		</table>
     <?php 
 }
@@ -244,10 +211,4 @@ function BanPlayers()
 					</tbody>
 				</table>
     <?php 
-}
-
-function seconddb() 
-{
-	global $seconddb;
-	$seconddb = new wpdb('alexcaus_limogetv', 'limogestv87300', 'alexcaus_limogetv', 'localhost');
 }

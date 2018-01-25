@@ -1,5 +1,15 @@
 # Devcom admin log
 
+** 25 Janvier 2018 **
+
+* mise a jour de la base de donner 
+* creation des tables
+* mise a jour mineur du mods
+
+
+
+____
+
 - Création du plugin
 - Mise en place des functions
 - Création des sous menus et tableau
@@ -8,3 +18,5 @@
 - Ceation et mise en condition de la page acceuil du plugin
 - Test de la Version 
 - mise en place du reponsive
+
+
