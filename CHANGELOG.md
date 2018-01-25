@@ -5,6 +5,7 @@
 * mise a jour de la base de donner 
 * creation des tables
 * mise a jour mineur du mods
+* add pages options 
 
 
 

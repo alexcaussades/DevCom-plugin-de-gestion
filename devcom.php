@@ -16,6 +16,8 @@ function devcomMenus()
 {
 	add_menu_page('devcomadmin', 'DevCom Admin', 'activate_plugins', 'decom-pannel', 'render_pannel', null, 81);
 	add_submenu_page('decom-pannel', 'Gestion', 'Gestion Membres', 'activate_plugins', 'devcomadmin-secondary-page', 'gestionMembres');
+	add_submenu_page( 'decom-pannel', 'Ajout', 'Ajout Membres', 'activate_plugins', 'devcomadmin-addMembre', 'addMembres' );
+	add_submenu_page( 'decom-pannel', 'option', 'Option', 'activate_plugins', 'devcomadmin-option', 'devcomoption' );
 }
 
  
@@ -58,6 +60,7 @@ Version du plugin: <strong><?= $devcomVariableVersion; ?></strong>
 			<?= SuppPlayers(); //ajout de support ?>
 			<br />
 			<?= BanPlayers(); //ajout de ban ?> 
+			
 </div>
 
 <!-- fin de la page d'acceuil du bac office -->
@@ -103,10 +106,17 @@ if(isset($_POST['devcom_option_pseudo']) AND isset($_POST['devcom_option_discord
 						'devcom_option_discord'  => $devcom_option_discord,
 						'devcom_option_steamid'  => $devcom_option_steamid,
 						'devcom_option_user_id'  => $devcom_option_user_id,
-						'devcom_option_comments' => $devcom_option_comments,
+						'devcom_option_comments' => $devcom_option_comments
 						));
-}
-			
+           ?>
+           <div id="message" class="updated fade">
+           		<p><strong>Entrée sauvegarder </stong></p>
+           </div>
+           <?}
+			global $wpdb;
+			$user_count = $wpdb->get_var( "SELECT COUNT(*) FROM wp_devcom" );
+			echo "<p><b>Nous sommes: ". $user_count ."</b></p>";
+
 	?>
 	    <table cellspacing="0" class="widefat options-table">
 					<thead>
@@ -116,17 +126,23 @@ if(isset($_POST['devcom_option_pseudo']) AND isset($_POST['devcom_option_discord
 					</thead>
 					<tbody>
 			<td>
-			<form method="post" action="">
+			<form method="post" action="" style='width: 100%; height: 100%'>
     	 	<label><b>Pseudo : </b></label>
-			<input type="text" name="devcom_option_pseudo" id="pseudo"> <br />
+			<input type="text" name="devcom_option_pseudo" id="pseudo" placeholder="Mettre le pseudo (RP)" style="width: 100%; height: 100%"><br />
+
 			<label><b>Discord : </b></label>
-			<input type="text" name="devcom_option_discord" id="discord"><br />
+			<input type="text" name="devcom_option_discord" id="discord" placeholder="Mettre le pseudo Discord" style="width: 100%; height: 100%"><br />
+
 			<label><b>steamid : </b></label>
 			<? /* Steamid de valeur de 17 caratere blocage du systeme */ ?>
-			<input type="text" name="devcom_option_steamid" id="steamid" minlength="17" maxlength="17" placeholder="76561198027438386"><br />
+			<input type="text" name="devcom_option_steamid" id="steamid" minlength="17" maxlength="17" placeholder="76561198027438386" style="width: 100%; height: 100%"><br />
+
 			<label><b>Commentaire : </b></label><br />
-			<textarea name="devcom_option_comments" id="commentaire"></textarea><br />
+			<textarea name="devcom_option_comments" id="commentaire" placeholder="Quelque chose à nous dire !" style="width: 100%; height: 100%"></textarea><br />
+
+			<? /* Récupère le pseudo de l'utilisateur qui effectue la manipulation   */ ?>
 			<input type="hidden" name="devcom_option_user_id" value="<?= $current_user->user_login ?>">
+
 			<input type="submit" name="devcom_AddPlayers" class="button-primary autowidth" value="Envoyer"><br />
     	 </form></td>
 			</tbody>
@@ -207,4 +223,18 @@ function BanPlayers()
 					</tbody>
 				</table>
     <?php 
+}
+
+function addMembres()
+{
+ echo BanPlayers();
+}
+
+function devcomoption()
+{
+
+global $wpdb;
+$user = $wpdb->get_row( "SELECT * FROM wp_devcom WHERE id = 4");
+			echo "<p><b>Pseudo: ". $user->devcom_option_pseudo ." <br />ID dans la base: ". $user->id ."</b></p>";
+			echo "<p><b>Discord: ". $user->devcom_option_discord ."</b></p>";
 }
