@@ -3,7 +3,7 @@
 Plugin Name: Devcom communauté admin
 Plugin URI: http://devcomrp.fr
 Description: plugin de gestion de la communauté...
-Version: 1.0
+Version: 1.0.2
 Author: Alexandre Caussades
 Author URI: http://devcomrp.fr
 License: Sous droit d'auteur Alexandre Caussades <alexcaussades (at) gmail.com>
@@ -20,7 +20,17 @@ function devcomMenus()
 	add_submenu_page( 'decom-pannel', 'option', 'Option', 'activate_plugins', 'devcomadmin-option', 'devcomoption' );
 }
 
- 
+
+
+/*
+
+*******************************************************************************
+							les pages dans le Back Office
+*******************************************************************************
+
+ */
+
+
 
 function render_pannel()
 /*
@@ -29,15 +39,8 @@ function render_pannel()
 {
 	global $current_user; // info user
 	global $user_login; //  Info login
-		
-	/*
-		Variables de la Pages
-	 */
-	
-	$devcomVariableVersion = '1.0'; //Affichage de la version
-	$devcomimage = plugins_url('devcom/images/icon.png'); //Affichage de limage
-	$devcomtitre = 'DevCom Panel Admin !'; //Titre de la page
-	
+	require_once 'variable.php';
+			
 ?>
 <!-- Visible de la page d'acceuil en bac office -->
 <div class="wrap theme-options-page">
@@ -53,13 +56,7 @@ Version du plugin: <strong><?= $devcomVariableVersion; ?></strong>
     	 <br />
     	 <br />
 		</div>
-			<?= AddPlayers(); //ajout de Membre ?>
-			<br /> 
-			<?= ModPlayers(); //ajout de moderation ?>
-			<br />
-			<?= SuppPlayers(); //ajout de support ?>
-			<br />
-			<?= BanPlayers(); //ajout de ban ?> 
+			
 			
 </div>
 
@@ -80,16 +77,103 @@ function recherche()
     <?php 
 }
 
+/*
+
+Tableau de la gestion des membres du syteme
+@param "wp_devcom"
+pages getion membres
+A Faire la mise en forme documents
+
+ */
 function gestionMembres()
 {
 
+global $wpdb;
+
+$requete = "SELECT * FROM wp_devcom";
+$resultat = $wpdb->get_results( $requete );
+
+$erreurSql = $wpdb->last_error;
+
+if ( $erreurSql == "" ) {
+
+   if ( $wpdb->num_rows > 0 ) {
+
+      ?>
+
+      <table class="...">
+
+        
+         <tbody>
+
+         <?php
+
+         foreach( $resultat as $enreg ) {
+
+            echo "<tr>";
+
+            echo "<td>$enreg->id</td>";
+            
+            echo "<td>$enreg->devcom_option_pseudo</td>";
+
+            echo "<td>$enreg->devcom_option_discord</td>";
+
+            echo "<td>$enreg->devcom_option_comments</td>";
+
+            echo "</tr>";
+
+         } 
+
+         ?>
+
+         </tbody>
+
+      </table>
+
+      <?php
+
+   } else {
+
+      echo  __( "Aucune donnée ne correspond aux critères demandés." );
+
+   }
+
+} else {
+
+   echo  __( "Oups ! Un problème a été rencontré." );
+
+   // afficher l'erreur à l'écran seulement si on est en mode débogage
+
+   montheme_echo_debug( $erreurSql );
+
 }
+}
+
+function addMembres()
+{
+ echo AddPlayers();
+}
+
+function devcomoption()
+{
+
+
+}
+
+/*
+
+*******************************************************************************
+							Appel des functions des pages 
+*******************************************************************************
+ */
+
 
 
 function AddPlayers()
 {
 			global $current_user;
-			
+			require_once 'variable.php';
+
 if(isset($_POST['devcom_option_pseudo']) AND isset($_POST['devcom_option_discord']) AND isset($_POST['devcom_option_steamid']) AND isset($_POST['devcom_option_user_id']))
 {
 
@@ -113,6 +197,8 @@ if(isset($_POST['devcom_option_pseudo']) AND isset($_POST['devcom_option_discord
            		<p><strong>Entrée sauvegarder </stong></p>
            </div>
            <?}
+?><center><img src="<?= $devcomimage; ?>" alt="Logo Devcom" title="Devcom Logo"></center><?
+			
 			global $wpdb;
 			$user_count = $wpdb->get_var( "SELECT COUNT(*) FROM wp_devcom" );
 			echo "<p><b>Nous sommes: ". $user_count ."</b></p>";
@@ -152,89 +238,16 @@ if(isset($_POST['devcom_option_pseudo']) AND isset($_POST['devcom_option_discord
 
 function ModPlayers()
 {
-	?>
-	    <table cellspacing="0" class="widefat options-table">
-					<thead>
-					<tr>
-						<th><strong> Modération Players :</strong></th>
-					</tr>
-					</thead>
-					<tbody>
-						<td>
-			<form method="get" action="">
-    	 	<label><b>Pseudo : </b></label>
-			<input type="text" name="option[pseudo]" id="pseudo">
-			<label><b>Discord : </b></label>
-			<input type="text" name="option[discord]" id="discord">
-			<label><b>steamid : </b></label>
-			<input type="text" name="option[steamid]" id="steamid">
-			<input type="submit" name="devcom_AddPlayers" class="button-primary autowidth" value="Envoyer">
-    	 </form></td>
-					</tbody>
-				</table>
-    <?php 
+	
 }
 
 function SuppPlayers()
 {
-	?>
-	    <table cellspacing="0" class="widefat options-table">
-					<thead>
-					<tr>
-						<th><strong> Support Players :</strong></th>
-					</tr>
-					</thead>
-					<tbody>
-						<td>
-			<form method="get" action="">
-    	 	<label><b>Pseudo : </b></label>
-			<input type="text" name="option[pseudo]" id="pseudo">
-			<label><b>Discord : </b></label>
-			<input type="text" name="option[discord]" id="discord">
-			<label><b>steamid : </b></label>
-			<input type="text" name="option[steamid]" id="steamid">
-			<input type="submit" name="devcom_AddPlayers" class="button-primary autowidth" value="Envoyer">
-    	 </form></td>
-					</tbody>
-				</table>
-    <?php 
+	
 }
 
 function BanPlayers()
 {
-	?>
-	    <table cellspacing="0" class="widefat options-table">
-					<thead>
-					<tr>
-						<th><strong> Ban Players :</strong></th>
-					</tr>
-					</thead>
-					<tbody>
-						<td>
-			<form method="get" action="">
-    	 	<label><b>Pseudo : </b></label>
-			<input type="text" name="option[pseudo]" id="pseudo">
-			<label><b>Discord : </b></label>
-			<input type="text" name="option[discord]" id="discord">
-			<label><b>steamid : </b></label>
-			<input type="text" name="option[steamid]" id="steamid">
-			<input type="submit" name="devcom_AddPlayers" class="button-primary autowidth" value="Envoyer">
-    	 </form></td>
-					</tbody>
-				</table>
-    <?php 
+	
 }
 
-function addMembres()
-{
- echo BanPlayers();
-}
-
-function devcomoption()
-{
-
-global $wpdb;
-$user = $wpdb->get_row( "SELECT * FROM wp_devcom WHERE id = 4");
-			echo "<p><b>Pseudo: ". $user->devcom_option_pseudo ." <br />ID dans la base: ". $user->id ."</b></p>";
-			echo "<p><b>Discord: ". $user->devcom_option_discord ."</b></p>";
-}

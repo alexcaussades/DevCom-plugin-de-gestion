@@ -1,11 +1,17 @@
 # Devcom admin log
 
-** 25 Janvier 2018 **
+**26 janvier 2018**
+
+* tableau liste des membres ok
+
+
+____
+**25 Janvier 2018**
 
 * mise a jour de la base de donner 
 * creation des tables
 * mise a jour mineur du mods
-* add pages options 
+* add pages options
 
 
 
