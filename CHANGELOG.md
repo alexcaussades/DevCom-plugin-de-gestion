@@ -1,5 +1,10 @@
 # Devcom admin log
 
+** 18 aout 2018**
+
+* repise du code 
+
+____
 **26 janvier 2018**
 
 * tableau liste des membres ok
